@@ -1,4 +1,12 @@
 require 'spec_helper'
+def full_title(page_title) # Определение метода
+    base_title = "Ruby on Rails Tutorial Sample App"# Назначение переменной
+    if page_title.empty?# Булевый тест
+      base_title# Явное возвращение
+    else
+      "#{base_title}| #{page_title}" # Интерполяция строки
+    end
+  end
 
 # Specs in this file have access to a helper object that includes
 # the StaticPagesHelper. For example:
