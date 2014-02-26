@@ -20,7 +20,9 @@ end
 group :test do
   gem 'selenium-webdriver', '2.35.1'
   gem 'capybara', '2.1.0'
-    # OS X: раскомментируйте эти строки.
+  #gem 'cucumber-rails', '1.4.0', :require => false
+  #gem 'database_cleaner', github: 'bmabey/database_cleaner'
+  # OS X: раскомментируйте эти строки.
   # gem 'growl', '1.0.3'
 
   # Linux: раскомментируйте эти строки.
