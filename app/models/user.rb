@@ -1,5 +1,14 @@
 class User < ActiveRecord::Base
 	has_many :microposts, dependent: :destroy #Пользователь имеет_много микросообщений. 
+  #  dependent: :destroy При удалении пользователя удалять все сообщения и связи из таблиц
+  has_many :relationships, foreign_key: "follower_id", dependent: :destroy
+  has_many :followed_users, through: :relationships, source: :followed
+
+  has_many :reverse_relationships, foreign_key: "followed_id",
+                                   class_name:  "Relationship",
+                                   dependent:   :destroy
+  has_many :followers, through: :reverse_relationships, source: :follower
+
 	before_save { self.email = email.downcase } #Перевод почты к нижнему регистру перед сохранением в БД
 	#before_save { email.downcase! } # Альтернативная реализация before_save
 	before_create :create_remember_token
@@ -22,7 +31,19 @@ class User < ActiveRecord::Base
   def feed
     # Это предварительное решение. См. полную реализацию в "Following users".
     #Micropost.where("user_id = ?", id)
-    microposts
+    Micropost.from_users_followed_by(self)
+  end
+
+  def following?(other_user)
+    relationships.find_by(followed_id: other_user.id)
+  end
+
+  def follow!(other_user)
+    relationships.create!(followed_id: other_user.id)
+  end
+
+  def unfollow!(other_user)
+    relationships.find_by(followed_id: other_user.id).destroy!
   end
 
   private
